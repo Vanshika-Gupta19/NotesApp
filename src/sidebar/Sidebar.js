@@ -6,34 +6,39 @@ import { useStyletron } from "baseui";
 import { SIZE } from 'baseui/input';
 import {styled} from 'baseui';
 
+const StyledNote = styled('div', ({ $active }) => ({
+  display: 'block',
+  padding: '10px',
+  marginBottom: '10px',
+  cursor: 'pointer',
+  borderRadius:'6px',
+  backgroundColor: $active ? 'lightgray' : '#F5F5F5', // Conditional background color for active note
+  ':hover': {
+    backgroundColor: '#f0f0f0', // Hover background color
+  },
+}));
 
+const Override = {BaseButton: {
+  style:{
+    marginTop: '20px',
+    marginBottom: '20px'
+  }
+}
+}
 
 const Sidebar = ({notes,onAddNote,onDeleteNote,activeNote,setActiveNote,searchTerm,setSearchTerm,}) => {
 
   const [css] = useStyletron();
 
-  const sortedNotes = notes.sort((a, b) => b.lastModified - a.lastModified);
-
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filteredNotes = sortedNotes.filter((note) =>
+  const sortedNotes = notes
+  .sort((a, b) => b.lastModified - a.lastModified)
+  .filter((note) =>
     note.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
-  const StyledNote = styled('div', ({ $active }) => ({
-    display: 'block',
-    padding: '10px',
-    marginBottom: '10px',
-    cursor: 'pointer',
-    borderRadius:'6px',
-    backgroundColor: $active ? 'lightgray' : '#F5F5F5', // Conditional background color for active note
-    ':hover': {
-      backgroundColor: '#f0f0f0', // Hover background color
-    },
-  }));
+  const handleSearch = (event) => { 
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <div className={css({width: '25%', height: '100vh', borderRight: '1px solid gray', display: 'flex', flexDirection: 'column', overflow: 'hidden', 
@@ -59,15 +64,7 @@ const Sidebar = ({notes,onAddNote,onDeleteNote,activeNote,setActiveNote,searchTe
                 width: '100%',
                 padding: '10px 20px',
             }})}
-        overrides={{
-          BaseButton: {
-            style:{
-              marginTop: '20px',
-              marginBottom: '20px'
-            }
-          }
-        }}
-        >Create New</Button>
+        overrides={Override}>Create New</Button>
         </div>
       </div>
             
@@ -89,13 +86,13 @@ const Sidebar = ({notes,onAddNote,onDeleteNote,activeNote,setActiveNote,searchTe
             }}}        
         />  
 
-        <div className={css({padding: '20px', cursor: 'pointer',margin: '10px', flex:'1 1 auto' ,overflowY: 'auto','@media (max-width: 1280px)': {
+        <div className={css({padding: '20px', cursor: 'pointer',margin: '10px', flex:'1 1 auto' ,overflowY: 'auto',
+        '@media (max-width: 1280px)': {
               padding: '10px',
             }})}>
 
-        {filteredNotes.map(({ id, title, lastModified }) => (
-          <StyledNote
-            key={id}
+        {sortedNotes.map(({ id, title, lastModified }) => (
+          <StyledNote key={id}
             $active={id === activeNote} // Pass $active prop to determine active note
             onClick={() => setActiveNote(id)}
           >
