@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import Sidebar from './sidebar/Sidebar';
 import Main from './main/Main';
 import uuid from 'react-uuid';
@@ -23,22 +23,24 @@ function App() {
     setActiveNote(newNote.id);
   };
 
-  const onDeleteNote = (noteId) => {
+  const onDeleteNote = useCallback(
+    (noteId) => {
     setNotes(notes.filter(({ id }) => id !== noteId));
     setActiveNote(null); // Clear active note if deleted
-  };
+  },[notes]);
 
-  const onUpdateNote = (updatedNote) => {
+  const onUpdateNote = useCallback( 
+    (updatedNote) => {
     const updatedNotesArr = notes.map((note) =>
       note.id === updatedNote.id ? updatedNote : note
     );
     setNotes(updatedNotesArr);
     setActiveNote(updatedNote.id); //Update active note after save
-  };
+  },[notes])
 
-  const getActiveNote = () => {
-    return notes.find(({ id }) => id === activeNote);
-  };
+  const getActiveNote = useMemo(() => 
+   notes.find(({ id }) => id === activeNote),[notes, activeNote]
+);
 
   return (
     <div className="App" style={{ display: 'flex', height: '100vh', width: '100%' }}>
@@ -52,7 +54,7 @@ function App() {
         onDeleteNote={onDeleteNote}
       />
       <Main
-        activeNote={getActiveNote()}
+        activeNote={getActiveNote}
         onUpdateNote={onUpdateNote}
         setActiveNote={setActiveNote}
       />

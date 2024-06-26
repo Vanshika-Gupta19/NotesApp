@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {Textarea} from 'baseui/textarea';
-import { Input } from 'baseui/input';
-import { Button } from 'baseui/button';
 import { useStyletron } from "baseui";
-import { SIZE } from "baseui/input";
+import Footer from '../footer/Foot';
+import Title from '../title/Title';
+import Description from '../description/Description';
 
 const Main = ({ activeNote, onUpdateNote, setActiveNote }) => {
 
@@ -30,79 +29,43 @@ const Main = ({ activeNote, onUpdateNote, setActiveNote }) => {
   };
 
   const handleCancel = () => {
-    // Reset editedNote to originalNote
-    setEditedNote(originalNote);
+    setEditedNote(originalNote); // Reset editedNote to originalNote
   };
 
   //if there is no active note then it will display this message 
-  if (!editedNote) return <div className={css({margin: 'auto', color: 'gray', fontSize: '20px'})}>No Active Note</div>;
+  if (!editedNote) return <div className={css({ margin: 'auto', color: 'gray', fontSize: '20px' })}>No Active Note</div>;
 
   return (
-    <div className={css({width: '75%', height: '100vh', marginLeft: '20px', marginRight:'20px',
+    <div className={css({
+      width: '75%', height: '100vh', marginLeft: '20px', marginRight: '20px',
       '@media (max-width: 1280px)': {
-          width: '100%',
-          height: 'auto',
-          marginLeft: '10px',
-          marginRight: '10px',
-        }})}>
+        width: '100%',
+        height: 'auto',
+        marginLeft: '10px',
+        marginRight: '10px',
+      }
+    })}>
 
-      <div className={css({margin: '10px',
-      '@media (max-width: 1280px)': {
-            margin: '5px',
-          }})}>
-
-        <span className= {css({marginLeft: '5px', fontSize: '25px', fontWeight: 'bold'})}>Title</span>
-        
-        <Input
-          type="text"
-          id="title"
-          placeholder="Title of Note"
-          value={editedNote.title}
-          size={SIZE.large}
-          onChange={(e) => onEditField("title", e.target.value)}
-          autoFocus
-        />
-
-        <div className={css({margin: '20px',
+      <div className={css({
+        margin: '10px',
         '@media (max-width: 1280px)': {
-              margin: '10px',
-            }})}></div>
+          margin: '5px',
+        }
+      })}>
 
-        <span className={css({fontSize: '25px', fontWeight: 'bold'})}>Description</span>
-        <Textarea 
-          id="body"
-          placeholder="Write your note here..."
-          value={editedNote.body}
-          size={SIZE.large}
-          onChange={(e) => onEditField("body", e.target.value)}
-               
-          overrides={{
-            Input: {
-              style: {height: '650px', 
-                '@media (max-width: 1280px)': {
-                  height: '300px',
-                }}
-            }
-          }}
-        />
+        <Title value={editedNote.title} onChange={(e) => onEditField("title", e.target.value)} autoFocus/>
 
-        <div className={css({display: 'flex', gap: '25px', justifyContent: 'flex-end', marginTop: '60px',
-        '@media (max-width: 1280px)': {
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }})}>
-
-          <Button onClick={handleCancel} className={css({width: '85px',
+        <div className={css({
+          margin: '20px',
           '@media (max-width: 1280px)': {
-                width: '100%',
-                marginBottom: '10px',
-              }})}>Cancel</Button>
+            margin: '10px',
+          }
+        })}></div>
 
-          <Button onClick={handleSave} className={css({width: '85px',
-          '@media (max-width: 1280px)': {
-                width: '100%',
-              }})}>Save</Button>
-        </div>
+        <Description value={editedNote.body} onChange={(e) => onEditField("body", e.target.value)}/>
+
+        <Footer onSave={handleSave} onCancel={handleCancel} />
+
       </div>
     </div>
   );
